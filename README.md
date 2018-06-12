@@ -1,8 +1,7 @@
-# Logstash Plugin
+# Logstash Avro Data File Codec
 
-This is a plugin for [Logstash](https://github.com/elastic/logstash).
+This is a plugin for [Logstash](https://github.com/elastic/logstash). It is intended to make it easy to parse Avro data files.
 
-It is fully free and fully open source. The license is Apache 2.0, meaning you are pretty much free to use it however you want in whatever way.
 
 ## Documentation
 
@@ -49,7 +48,7 @@ bundle exec rspec
 
 - Edit Logstash `Gemfile` and add the local plugin path, for example:
 ```ruby
-gem "logstash-codec-awesome", :path => "/your/local/logstash-codec-awesome"
+gem "logstash-codec-avro-data-file", :path => "/your/local/logstash-codec-avro-data-file"
 ```
 - Install plugin
 ```sh
@@ -57,7 +56,7 @@ bin/logstash-plugin install --no-verify
 ```
 - Run Logstash with your plugin
 ```sh
-bin/logstash -e 'codec {awesome {}}'
+bin/logstash -e 'codec {avro-data-file {}}'
 ```
 At this point any modifications to the plugin code will be applied to this local Logstash setup. After modifying the plugin, simply rerun Logstash.
 
@@ -67,11 +66,11 @@ You can use the same **2.1** method to run your plugin in an installed Logstash 
 
 - Build your plugin gem
 ```sh
-gem build logstash-codec-awesome.gemspec
+gem build logstash-codec-avro-data-file.gemspec
 ```
 - Install the plugin from the Logstash home
 ```sh
-bin/logstash-plugin install /your/local/plugin/logstash-codec-awesome.gem
+bin/logstash-plugin install /your/local/plugin/logstash-codec-avro-data-file.gem
 ```
 - Start Logstash and proceed to test the plugin
 
