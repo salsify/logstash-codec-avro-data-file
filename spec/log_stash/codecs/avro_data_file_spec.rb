@@ -1,4 +1,5 @@
 # encoding: utf-8
+
 require_relative '../spec_helper'
 require 'logstash/codecs/avro-data-file'
 require 'json'
@@ -17,14 +18,12 @@ describe LogStash::Codecs::AvroDataFile do
   shared_examples "produces the correct output" do
     specify do
       expect(events.length).to eq expected_events.length
-      events.each do |event| 
-        expect(event).to be_an_instance_of(LogStash::Event)
-      end
+      expect(events).to all(be_an_instance_of(LogStash::Event))
       event_hashes = events.map(&:to_hash).map do |event|
-        event.except("@timestamp", "@version")
+        event.except('@timestamp', '@version')
       end
       expected_hashes = expected_events.map(&:to_hash).map do |event|
-        event.except("@timestamp", "@version")
+        event.except('@timestamp', '@version')
       end
 
       expect(event_hashes).to eq expected_hashes
@@ -82,9 +81,7 @@ describe LogStash::Codecs::AvroDataFile do
               writer << message
             end
           end
-          File.open(tempfile.path, 'rb') do |file|
-            file.to_a
-          end
+          File.open(tempfile.path, 'rb', &:to_a)
         end
         let(:expected_events) { avro_messages.map(&LogStash::Event.method(:new)) }
 

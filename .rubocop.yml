@@ -1,0 +1,16 @@
+inherit_gem:
+  salsify_rubocop: conf/rubocop.yml
+
+AllCops:
+  TargetRubyVersion: 2.3
+
+Style/WordArray:
+  Enabled: false
+
+Style/FileName:
+  Exclude:
+    - 'lib/logstash/codecs/avro-data-file.rb'
+
+Style/ClassAndModuleChildren:
+  Exclude:
+    - 'lib/logstash/codecs/avro-data-file.rb'

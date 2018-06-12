@@ -26,7 +26,7 @@ class LogStash::Codecs::AvroDataFile < LogStash::Codecs::Base
 
   # Set the directory where logstash will store the tmp files before processing them.
   # default to the current OS temporary directory in linux /tmp/logstash/avro
-  config :temporary_directory, :validate => :string, :default => File.join(Dir.tmpdir, 'logstash', 'avro')
+  config :temporary_directory, validate: :string, default: File.join(Dir.tmpdir, 'logstash', 'avro')
 
   def register
     require 'fileutils'
@@ -42,19 +42,19 @@ class LogStash::Codecs::AvroDataFile < LogStash::Codecs::Base
     tempfile.flush
     return unless block_given?
 
-    Avro::DataFile.open(tempfile.path, 'r') do |reader| 
+    Avro::DataFile.open(tempfile.path, 'r') do |reader|
       reader.each do |avro_message|
         yield LogStash::Event.new(avro_message)
       end
     end
   rescue => e
-    @logger.error("Avro parse error", :error => e)
+    @logger.error('Avro parse error', error: e)
   ensure
     reset
   end
 
-  def encode(event)
-    raise "Not implemented"
+  def encode(_event)
+    raise 'Not implemented'
   end
 
   private
@@ -71,7 +71,7 @@ class LogStash::Codecs::AvroDataFile < LogStash::Codecs::Base
       begin
         File.unlink(tempfile.path)
         tempfile.close
-      rescue Errno::ENOENT
+      rescue Errno::ENOENT # rubocop:disable Lint/HandleExceptions
       end
     end
     self.tempfile = Tempfile.create('', temporary_directory)
