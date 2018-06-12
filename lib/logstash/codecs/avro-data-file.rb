@@ -49,6 +49,8 @@ class LogStash::Codecs::AvroDataFile < LogStash::Codecs::Base
     end
   rescue => e
     @logger.error("Avro parse error", :error => e)
+  ensure
+    reset
   end
 
   def encode(event)
