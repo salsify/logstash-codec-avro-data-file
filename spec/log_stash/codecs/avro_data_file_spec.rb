@@ -52,11 +52,14 @@ describe LogStash::Codecs::AvroDataFile do
       end
 
       context "valid data" do
+        let(:schema_name) { 'mock_schema' }
+        let(:schema_type) { 'record' }
+        let(:schema_namespace) { 'com.salsify.test' }
         let(:schema) do
           {
-            'type' => 'record',
-            'name' => 'mock_schema',
-            'namespace' => 'com.salsify.test',
+            'type' => schema_type,
+            'name' => schema_name,
+            'namespace' => schema_namespace,
             'fields' => [
               {
                 'name' => 'id',
@@ -85,6 +88,21 @@ describe LogStash::Codecs::AvroDataFile do
         let(:expected_events) { avro_messages.map(&LogStash::Event.method(:new)) }
 
         include_examples "produces the correct output"
+
+        context "decorate events" do
+          let(:config) { { 'decorate_events' => true } }
+          let(:expected_events) do
+            avro_messages.map do |message|
+              LogStash::Event.new(message).tap do |event|
+                event.set('[@metadata][avro][type]', schema_type)
+                event.set('[@metadata][avro][name]', schema_name)
+                event.set('[@metadata][avro][namespace]', schema_namespace)
+              end
+            end
+          end
+
+          include_examples "produces the correct output"
+        end
       end
     end
   end

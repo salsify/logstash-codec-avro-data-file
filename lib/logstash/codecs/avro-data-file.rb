@@ -5,19 +5,21 @@ require 'logstash/codecs/base'
 require 'logstash/namespace'
 require 'tmpdir'
 
-# This  codec will append a string to the message field
-# of an event, either in the decoding or encoding methods
+# == Logstash Codec - Avro Data File
+# 
+# This plugin is used to process logstash events that represent
+# Avro data files, like the S3 input can produce.
 #
-# This is only intended to be used as an example.
+# ==== Options
+#
+# - ``temporary_directory`` - optional. Specifies a directory to store
+#   temporary files in
+# - ``decorate_events`` - will add avro schema metadata to the events.
+#
+# ==== Usage
 #
 # input {
 #   stdin { codec => 'avro-data-file' }
-# }
-#
-# or
-#
-# output {
-#   stdout { codec => 'avro-data-file' }
 # }
 #
 class LogStash::Codecs::AvroDataFile < LogStash::Codecs::Base
@@ -27,6 +29,7 @@ class LogStash::Codecs::AvroDataFile < LogStash::Codecs::Base
   # Set the directory where logstash will store the tmp files before processing them.
   # default to the current OS temporary directory in linux /tmp/logstash/avro
   config :temporary_directory, validate: :string, default: File.join(Dir.tmpdir, 'logstash', 'avro')
+  config :decorate_events, validate: :boolean, default: false
 
   def register
     require 'fileutils'
@@ -43,11 +46,15 @@ class LogStash::Codecs::AvroDataFile < LogStash::Codecs::Base
     return unless block_given?
 
     Avro::DataFile.open(tempfile.path, 'r') do |reader|
+      schema = reader.datum_reader.writers_schema
       reader.each do |avro_message|
-        yield LogStash::Event.new(avro_message)
+        event = LogStash::Event.new(avro_message)
+        decorate_event(event, schema) if decorate_events?
+        yield event
       end
     end
   rescue => e
+    puts e
     @logger.error('Avro parse error', error: e)
   ensure
     reset
@@ -75,5 +82,17 @@ class LogStash::Codecs::AvroDataFile < LogStash::Codecs::Base
       end
     end
     self.tempfile = Tempfile.create('', temporary_directory)
+  end
+
+  def decorate_events?
+    @decorate_events
+  end
+
+  def decorate_event(event, schema)
+    event.set('[@metadata][avro][type]', schema.type)
+    if schema.is_a?(Avro::Schema::NamedSchema)
+      event.set('[@metadata][avro][name]', schema.name)
+      event.set('[@metadata][avro][namespace]', schema.namespace)
+    end
   end
 end
