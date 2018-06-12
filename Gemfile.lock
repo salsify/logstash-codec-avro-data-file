@@ -9,8 +9,11 @@ PATH
 GEM
   remote: https://rubygems.org/
   specs:
+    ast (2.4.0)
     avro (1.8.2)
       multi_json
+    childprocess (0.9.0)
+      ffi (~> 1.0, >= 1.0.11)
     chronic_duration (0.10.6)
       numerizer (~> 0.1.1)
     clamp (0.6.5)
@@ -33,6 +36,7 @@ GEM
     gem_publisher (1.5.0)
     gems (0.8.3)
     i18n (0.6.9)
+    iniparse (1.4.4)
     insist (1.0.0)
     jar-dependencies (0.3.12)
     jrjackson (0.4.6-java)
@@ -81,7 +85,13 @@ GEM
     multi_json (1.13.1)
     multipart-post (2.0.0)
     numerizer (0.1.1)
+    overcommit (0.45.0)
+      childprocess (~> 0.6, >= 0.6.3)
+      iniparse (~> 1.4)
+    parser (2.5.1.0)
+      ast (~> 2.4.0)
     polyglot (0.3.5)
+    powerpack (0.1.2)
     pry (0.10.4-java)
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
@@ -91,6 +101,8 @@ GEM
     rack (1.6.6)
     rack-protection (1.5.5)
       rack
+    rainbow (2.2.2)
+      rake
     rake (12.3.1)
     rspec (3.7.0)
       rspec-core (~> 3.7.0)
@@ -107,10 +119,22 @@ GEM
     rspec-support (3.7.1)
     rspec-wait (0.0.9)
       rspec (>= 3, < 4)
+    rubocop (0.48.1)
+      parser (>= 2.3.3.1, < 3.0)
+      powerpack (~> 0.1)
+      rainbow (>= 1.99.1, < 3.0)
+      ruby-progressbar (~> 1.7)
+      unicode-display_width (~> 1.0, >= 1.0.1)
+    rubocop-rspec (1.15.1)
+      rubocop (>= 0.42.0)
     ruby-maven (3.3.12)
       ruby-maven-libs (~> 3.3.9)
     ruby-maven-libs (3.3.9)
+    ruby-progressbar (1.9.0)
     rubyzip (1.1.7)
+    salsify_rubocop (0.48.1)
+      rubocop (~> 0.48.1)
+      rubocop-rspec (~> 1.15.0)
     sinatra (1.4.8)
       rack (~> 1.5)
       rack-protection (~> 1.4)
@@ -124,13 +148,17 @@ GEM
     treetop (1.4.15)
       polyglot
       polyglot (>= 0.3.1)
+    unicode-display_width (1.4.0)
 
 PLATFORMS
   java
 
 DEPENDENCIES
+  bundler (~> 1.16)
   logstash-codec-avro-data-file!
   logstash-devutils
+  overcommit
+  salsify_rubocop (~> 0.48.0)
 
 BUNDLED WITH
    1.16.2

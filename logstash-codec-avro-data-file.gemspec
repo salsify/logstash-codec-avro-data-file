@@ -31,4 +31,8 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'logstash-codec-line'
   s.add_runtime_dependency 'logstash-core-plugin-api', '~> 2.0'
   s.add_development_dependency 'logstash-devutils'
+
+	s.add_development_dependency 'bundler', '~> 1.16'
+	s.add_development_dependency 'overcommit'
+  s.add_development_dependency 'salsify_rubocop', '~> 0.48.0'
 end
